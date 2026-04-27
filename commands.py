@@ -9,18 +9,18 @@ def Create(packing_file: str, folder_path: str):
         files = [file for file in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, file))]
         #основная часть создания файла
         with open(packing_file, 'wb') as file_to_archive:
-            file_to_archive.write(struct.pack('<8s I', b'ABOBAHEH', file_to_archive)) 
+            file_to_archive.write(struct.pack('<8s I', b'ABOBAHEH', len(files))) 
             for i in files: 
                 file_path = os.path.join(folder_path, i)
                 size = os.path.getsize(file_path)
-                name = i.encode('ascii')
+                name = i.encode('utf-8')
                 #информация для работы с данными
                 file_to_archive.write(struct.pack('<Q', size))
                 file_to_archive.write(struct.pack('<H', len(name)))
                 file_to_archive.write(name) #запись файла
                 with open(file_path, 'rb') as input_file:
                     while True: 
-                        chunk = input_file.read(chunk)
+                        chunk = input_file.read(CHUNK)
                         if not chunk:
                             break
                         file_to_archive.write(chunk)
@@ -32,13 +32,13 @@ def Create(packing_file: str, folder_path: str):
 мы вытаскиваем из архива файл 
 '''
 
-def unpack(packing_file: str, path: str):
+def Unpack(packing_file: str, path: str):
     pass
 
-def add(adding_file: str, path: str):
+def AddFile(adding_file: str, path: str):
     pass
 
-def remove(removing_file: str, path: str):
+def Remove(removing_file: str, path: str):
     pass
     
         
