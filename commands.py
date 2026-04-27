@@ -1,6 +1,44 @@
 import os
+import sys
+import struct
 
-def Unpack(unpackage_file: str, path: str):
-    mkdir(f"{unpackage_file}")
+CHUNK = 4096
+
+def Create(packing_file: str, folder_path: str):
+    if os.path.isdir(folder_path): #массив с всеми файлами папки
+        files = [file for file in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, file))]
+        #основная часть создания файла
+        with open(packing_file, 'wb') as file_to_archive:
+            file_to_archive.write(struct.pack('<8s I', b'ABOBAHEH', file_to_archive)) 
+            for i in files: 
+                file_path = os.path.join(folder_path, i)
+                size = os.path.getsize(file_path)
+                name = i.encode('ascii')
+                #информация для работы с данными
+                file_to_archive.write(struct.pack('<Q', size))
+                file_to_archive.write(struct.pack('<H', len(name)))
+                file_to_archive.write(name) #запись файла
+                with open(file_path, 'rb') as input_file:
+                    while True: 
+                        chunk = input_file.read(chunk)
+                        if not chunk:
+                            break
+                        file_to_archive.write(chunk)
+    else:
+        print("error, unknown folder")
+        sys.exit(1)
+'''
+мы получаем "имя" "куда распаковывать" "откуда брать"
+мы вытаскиваем из архива файл 
+'''
+
+def unpack(packing_file: str, path: str):
+    pass
+
+def add(adding_file: str, path: str):
+    pass
+
+def remove(removing_file: str, path: str):
+    pass
     
         
