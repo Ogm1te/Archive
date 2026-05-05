@@ -57,16 +57,15 @@ def AddFile(archive_path: str, path: str):
         header = our_archive.read(struct.calcsize(HEADER))
         counter = struct.unpack(HEADER, header)
 
-
-        for i in range(counter):
-        
+        with open(tpm_archive, 'wb') as tpm_archive:
+            for i in range(counter): 
 
             with open(path, 'rb') as input_file:
-                    while True: 
-                        chunk = input_file.read(CHUNK)
-                        if not chunk:
-                            break
-                        #our_archive.write(chunk)
+                while True: 
+                    chunk = input_file.read(CHUNK)
+                    if not chunk:
+                        break
+                    tpm_archive.write(chunk)
             
 
 def Remove(removing_file: str, path: str):
