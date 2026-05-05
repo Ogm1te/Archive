@@ -14,25 +14,21 @@ if len(args) != 3:
     sys.exit(1)
 
 
-
 # создание архива
 if args[0] == "create":
     archive_name = args[1]
     path = args[2]
-    print(archive_name, path)
     Create(archive_name, path) #куда упаковываем, какой файл
 # распаковка архива
 elif args[0] == "unpack":
     folder_for_packing = args[1]
     path = args[2]
-    with open(f"{path}", 'rb') as archiver:
-        Unpack(archive_for_unpackage, path) #куда распаковываем, какой файл
+    Unpack(archive_for_unpackage, path) #куда распаковываем, какой файл
 # добавление файла в архив
 elif args[0] == "add":
     archive_for_package = args[1]
     path = args[2]
     AddFile(archive_for_unpackage, path) 
-
 # удаление файла из архива
 elif args[0] == "remove":
     archive_for_package = args[1]
@@ -41,8 +37,3 @@ elif args[0] == "remove":
 else:
     print("Error: incorrect input")
     sys.exit(1)
-
-'''
-библиотеку архивирования + добавление
-библиотеку разархивирования + удаление
-'''
