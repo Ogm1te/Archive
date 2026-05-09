@@ -23,7 +23,7 @@ if args[0] == "create":
 elif args[0] == "unpack":
     folder_for_packing = args[1]
     path = args[2]
-    Unpack(archive_for_unpackage, path) #куда распаковываем, какой файл
+    UnpackArchive(archive_for_unpackage, path) #куда распаковываем, какой файл
 # добавление файла в архив
 elif args[0] == "add":
     archive_for_package = args[1]

@@ -36,7 +36,7 @@ def Create(packing_file: str, folder_path: str):
 мы вытаскиваем из архива файл 
 '''
 
-def Unpack(packing_file: str, path: str):
+def UnpackArchive(packing_file: str, path: str):
     pass
 
 def AddFile(archive_path: str, path: str):
@@ -48,7 +48,7 @@ def AddFile(archive_path: str, path: str):
         sys.exit(1)
     
     file_name = os.path.basename(path)
-    bytes_of_name = file_name.encode('utf-8')
+    bytes_of_file_name = file_name.encode('utf-8')
     size_of_file = os.path.getsize(path)
 
     tpm_archive = archive_path + ".tpm"
@@ -59,6 +59,18 @@ def AddFile(archive_path: str, path: str):
 
         with open(tpm_archive, 'wb') as tpm_archive:
             for i in range(counter): 
+                file_format = struct.calcsize('<H')
+                name_data = our_archive.read(file_format)
+                len_of_name = struct.pack('<H', name_data)[0]
+                bytes_of_name = our_archive.read(len_of_name)
+                
+                format = struct.calcsize('<Q')
+                size_data = our_archive.read(format)
+                our_archive_size = struct.unpack('<Q', size_data)[0]
+
+                if bytes_of_name != bytes_of_file_name:
+                    print("ahhaha")
+
 
             with open(path, 'rb') as input_file:
                 while True: 
