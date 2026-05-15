@@ -13,7 +13,7 @@ if len(args) != 3:
     print("Error: incorrect number of parameters entered")
     sys.exit(1)
 
-
+    
 # создание архива
 if args[0] == "create":
     archive_name = args[1]
@@ -28,7 +28,8 @@ elif args[0] == "unpack":
 elif args[0] == "add":
     archive_for_package = args[1]
     path = args[2]
-    AddFile(archive_for_unpackage, path) 
+    
+    AddFile(archive_for_package, path)
 # удаление файла из архива
 elif args[0] == "remove":
     archive_for_package = args[1]

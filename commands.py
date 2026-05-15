@@ -3,14 +3,14 @@ import sys
 import struct
 
 CHUNK = 4096
-HEADER = b'ABOBAHEH'
+SIGNA = b'ABOBAHEH'
 
 def Create(packing_file: str, folder_path: str):
     if os.path.isdir(folder_path): #массив с всеми файлами папки
         files = [file for file in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, file))]
         #основная часть создания файла
         with open(packing_file, 'wb') as file_to_archive:
-            file_to_archive.write(struct.pack('<8s I', HEADER, len(files))) 
+            file_to_archive.write(struct.pack('<8s I', SIGNA, len(files))) 
             
             for i in files: 
                 file_path = os.path.join(folder_path, i)
@@ -31,19 +31,18 @@ def Create(packing_file: str, folder_path: str):
     else:
         print("error, unknown folder")
         sys.exit(1)
-'''
-мы получаем "имя" "куда распаковывать" "откуда брать"
-мы вытаскиваем из архива файл 
-'''
 
-def UnpackArchive(packing_file: str, path: str):
+
+def UnpackArchive(unpacking_file: str, path: str):
     pass
 
+
 def AddFile(archive_path: str, path: str):
-    if not os.path.exists(path):
+    if not os.path.exists(archive_path):
         print("incorret path")
         sys.exit(1)
-    if not os.path.isfile(archive_path):
+
+    if not os.path.isfile(path):
         print("uknown file")
         sys.exit(1)
     
@@ -54,14 +53,18 @@ def AddFile(archive_path: str, path: str):
     tpm_archive = archive_path + ".tpm"
 
     with open(archive_path, 'rb') as our_archive:
-        header = our_archive.read(struct.calcsize(HEADER))
-        counter = struct.unpack(HEADER, header)
+        header = our_archive.read(struct.calcsize('<8s I'))
+        counter = struct.unpack('<8s I', header)[1]
 
-        with open(tpm_archive, 'wb') as tpm_archive:
+
+        with open(tpm_archive, 'wb') as tpm_arch:
+            new_archive_counter = 0
+
+            header_position = tpm_arch.tell()
+
             for i in range(counter): 
-                file_format = struct.calcsize('<H')
-                name_data = our_archive.read(file_format)
-                len_of_name = struct.pack('<H', name_data)[0]
+                name_data = our_archive.read(struct.calcsize('<H'))
+                len_of_name = struct.unpack('<H', name_data)[0]
                 bytes_of_name = our_archive.read(len_of_name)
                 
                 format = struct.calcsize('<Q')
@@ -69,16 +72,23 @@ def AddFile(archive_path: str, path: str):
                 our_archive_size = struct.unpack('<Q', size_data)[0]
 
                 if bytes_of_name != bytes_of_file_name:
-                    print("ahhaha")
+                    tpm_arch.write(name_data)
+                    tpm_arch.write(bytes_of_name)
+                    tpm_arch.write(size_data)
+                    
+                    with open(path, 'rb') as input_file:
+                        while True: 
+                            chunk = input_file.read(CHUNK)
+                            if not chunk:
+                                break
+                            tpm_arch.write(chunk)
+                    new_archive_counter += 1
 
+            tpm_arch.seek(header_position)
+            tpm_arch.write(struct.pack('<8s I', SIGNA, new_archive_counter))
 
-            with open(path, 'rb') as input_file:
-                while True: 
-                    chunk = input_file.read(CHUNK)
-                    if not chunk:
-                        break
-                    tpm_archive.write(chunk)
-            
+    os.replace(tpm_archive, archive_path)
+
 
 def Remove(removing_file: str, path: str):
     pass
