@@ -31,24 +31,21 @@ def Create(packing_file: str, folder_path: str):
         print("error, unknown folder")
         sys.exit(1)
 
-def UnpackArchive(archive_path, dest_folder):
-    "Распаковать все файлы из архива в указанную папку."
-    if not os.path.exists(archive_path):
-        raise ArchiveError(f"Архив'{archive_path}' не найден.")
+# Не рабочая функция
+'''
+def UnpackArchive(archive_path, dest_folder): 
+    #"Распаковать все файлы из архива в указанную папку."
     os.makedirs(dest_folder,exist_ok=True)
     with open(archive_path, 'rb') as arc:
         header_data = arc.read(struct.calcsize(HEADER_FORMAT))
-    if len(header_data) != struct.calcsize(HEADER_FORMAT): 
-        raise ArchiveError("Неверный формат архива: неполный заголовок.")
+
     sig, count = struct.unpack(HEADER_FORMAT, header_data)
-    if sig != SIGNATURE:
-        raise ArchiveError("Файл не является архивом указанного формата.")
+
     for_in range(count):
         name_len_data = arc.read(struct.calcsize(FILE_ENTRY_FORMAT)) 
-    if len(name_len_data) != struct.calcsize(FILE_ENTRY_FORMAT):
-        raise ArchiveError("Поврежденный фрхив: ощибка чтения длины имени.")
-        filename = name_bytes.decode('utf-8')
 
+        filename = name_bytes.decode('utf-8')
+'''
 
 def AddFile(archive_path: str, path: str):
     if not os.path.exists(archive_path):
