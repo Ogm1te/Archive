@@ -58,7 +58,6 @@ def AddFile(archive_path: str, path: str):
     
     file_name = os.path.basename(path)
     bytes_of_file_name = file_name.encode('utf-8')
-    size_of_file = os.path.getsize(path)
 
     tpm_archive = archive_path + ".tpm"
 
@@ -79,7 +78,6 @@ def AddFile(archive_path: str, path: str):
                 
                 format = struct.calcsize('<Q')
                 size_data = our_archive.read(format)
-                our_archive_size = struct.unpack('<Q', size_data)[0]
 
                 if bytes_of_name != bytes_of_file_name:
                     tpm_arch.write(name_data)
