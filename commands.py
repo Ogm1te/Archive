@@ -42,7 +42,7 @@ def UnpackArchive(archive_path, dest_folder):
     sig, count = struct.unpack(HEADER_FORMAT, header_data)
 
     for_in range(count):
-        name_len_data = arc.read(struct.calcsize(FILE_ENTRY_FORMAT)) 
+        name_len_data = arc.read(struct.calcsize(FILE_ENTRY_FORMA))
 
         filename = name_bytes.decode('utf-8')
 '''
